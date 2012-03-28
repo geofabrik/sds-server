@@ -1,0 +1,5 @@
+<%= render 'osm_object' %>
+<h1>Edit Object</h1>
+<p><a href="<%= show_shadow_path(@osm_shadow.osm_type, @osm_shadow.osm_id) %>" title="View Object"><img src="<%= asset_path 'snow/view.png'%>" width="20">View Object Properties (Cancel Edit)</a></p>
+<%= render @current_user.project.partial %>
+<%= render 'expert_view' %>

@@ -1,0 +1,18 @@
+<% @result.each do |shadow| %>
+<% desc = []
+   shadow.tags.each do |t| 
+       if t.key == "hot:bbb:name" 
+           desc.push "Name: #{t.value}"
+       elsif t.key == "hot:bbb:street_address"
+           desc.push "Address: #{t.value}"
+       end
+   end
+
+%>
+   <tr>
+   <td><a href="<%= show_shadow_path(shadow.osm_type, shadow.osm_id) %>" title="View Object"><img src="<%= asset_path 'snow/view.png' %>" width="20"></a></td>
+   <td><%= shadow.osm_id %></td>
+   <td><%= shadow.osm_type %></td>
+   <td><%= desc.join(" - ") %></td>
+   </tr>
+<% end %>

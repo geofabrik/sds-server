@@ -1,0 +1,2 @@
+module JosmapiHelper
+end

@@ -1,0 +1,21 @@
+<h1>All Users</h1>
+<%= render :partial => "users_sidebar" %>
+<div>
+
+<p>
+<a href="#" title="Hide/show inactive users" class="jq_users_hide_inactive">
+<img src="<%= asset_path 'snow/edit.png' %>" width="20">
+Hide/show inactive users
+</a>
+</p>
+
+<table class="users">
+<tr>
+   <th></th>
+   <th>Firstname</th>
+   <th>Lastname</th>
+   <th>Project</th>
+</tr>
+   <%= render @users %>
+</table>
+</div>

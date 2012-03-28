@@ -1,0 +1,479 @@
+/* set all distances to zero */
+body, div, span, h1, h2, h3, h4, h5, h6, ol, ul, li, fieldset, legend, p, i, b, em, pre, code, img {
+   padding: 0px;
+   margin: 0px;   
+   border: 0px;
+}
+table, thead, tbody, tr, th, td {
+   padding: 0px;
+   margin: 0px;   
+   border: 0px;
+}
+form, input, select, option {
+   padding: 0px;
+   margin: 0px;
+}
+
+a img {
+   border: 0px;   
+}
+
+
+/* colors
+
+
+
+*/
+
+
+/* body */
+body {
+   background: url("/assets/layout/gradient.jpg") repeat-x scroll 0 0 #E5E6E8;
+   font-family: sans-serif;   
+   color: #2A3845;
+}
+
+
+/* default styles */
+h1 {
+   font-size: 2em;   
+   font-weight: normal;
+   margin: 20px 0px 10px 0px;
+}
+
+
+h2 {
+   font-size: 1.1em;
+   margin: 20px 0px 10px 0px;
+}
+
+h3, h4, h5, h6 {
+   font-size: 1em;
+   margin: 10px 0px 5px 0px;
+}
+
+p, li, td, th {
+   font-size: .85em;
+}
+
+p {
+   margin: 10px 0px;
+}
+
+a {
+   color: #4071D3;
+   text-decoration: none;
+}
+
+a:hover {
+   text-decoration: underline;   
+}
+
+
+ul {
+   list-style-type: none;   
+   margin: 5px 0px;
+}
+
+li {
+   line-height: 1.5;   
+   margin: 5px 0px;
+}
+
+
+
+
+
+/* users sidebar */
+div.users_sidebar {
+   margin-top: 10px;
+   float: right;
+   width: 170px;
+   padding: 20px;
+   border: 1px dotted #217DB1;   
+}
+
+
+table {
+   margin-top: 10px;
+   empty-cells: show;
+   border-collapse: collapse;
+}
+
+table th {
+   text-align: left;
+   font-size: 0.8em;
+}
+
+table th, table td {
+   padding: 3px 10px;
+   border: 1px solid #fff;
+   font-size: 0.8em;
+}
+
+
+
+table.users {
+   width: 500px;   
+   background-color: #E5E6E8;
+}
+
+table.users tr:nth-child(1n+2) {
+   background-color: #F5F6F8;
+}
+
+table.users tr, table.users tr:nth-child(2n+3) {
+   background-color: #F1F4F5;
+}
+
+table.users th {
+   background-color: #D3D8DB;
+   text-align: left;
+   color: #222;
+   font-weight: normal;
+}
+
+table.users td {
+   vertical-align: middle;   
+}
+
+
+tr.users_inactive {
+   color: #AEB8BA;                                      
+}
+
+select.users_project option {
+   width: 205px;   
+}
+
+/* osm_shadows */
+div.osm_shadows_detail {
+   width: 500px;
+   margin: 0px 10px 10px 30px;
+   padding: 10px;
+   background-color: #E5E6E8;   
+   -moz-border-radius: 10px;
+   border-radius: 10px;
+   border: 1px solid #999;
+}
+
+table.osm_shadow {
+   margin-left: 30px;
+   width: 500px;   
+   background-color: #E5E6E8;
+}
+
+table.osm_shadow tr:nth-child(1n+2) {
+   background-color: #F5F6F8;
+}
+
+table.osm_shadow tr, table.users tr:nth-child(2n+3) {
+   background-color: #F1F4F5;
+}
+
+table.osm_shadow th {
+   background-color: #D3D8DB;
+   text-align: left;
+   vertical-align: top;
+   color: #222;
+   font-weight: normal;
+   width: 50%;
+}
+
+table.osm_shadow td {
+   vertical-align: middle;   
+}
+
+
+div.osm_shadow_submit {
+   margin-top: 20px;   
+   margin-left: 30px;
+}
+
+div.osm_shadow_no_tags {
+   font-style: italic;
+}
+
+/* osm_object (sidebar) */
+div.osm_object {
+   float: right; 
+   vertical-align: top;
+   background-color: #ffffef; 
+   width: 190px; 
+   min-height: 440px;
+}
+
+div.osm_object h2 {
+   margin: 0px;
+   padding: 3px 10px;
+   background-color: #217EB2;
+   border-bottom: 1px solid #fff;
+   color: #fff;
+   font-size: 0.9em;
+}
+
+div.osm_object ul {
+   margin: 0px;
+   padding: 3px 10px;
+}
+
+div.osm_object ul li {
+  font-size: 0.8em; 
+}
+
+div.osm_object_map {
+   width: 190px; 
+   height: 190px;
+}
+
+#change_project {
+   margin: 10px 0px 20px 0px;
+}
+
+#change_project select {
+   margin-left: 10px;
+   font-size: 0.7em;
+}
+
+
+/* application status page */
+table.app_status {
+   margin-left: 30px;
+   width: 500px;   
+   background-color: #E5E6E8;
+}
+
+table.app_status tr:nth-child(1n+2) {
+   background-color: #F5F6F8;
+}
+
+table.app_status tr {
+   background-color: #F1F4F5;
+}
+
+table.app_status th {
+   background-color: #D3D8DB;
+   text-align: left;
+   vertical-align: top;
+   color: #222;
+   font-weight: normal;
+   width: 20%;
+}
+
+table.app_status td {
+   vertical-align: top;   
+}
+
+
+div.app_status_side {
+   float: right; 
+   vertical-align: top;
+   background-color: #ffffef; 
+   width: 190px; 
+   min-height: 440px;
+}
+
+div.app_status_side h2 {
+   margin: 0px;
+   padding: 3px 10px;
+   background-color: #217EB2;
+   border-bottom: 1px solid #fff;
+   color: #fff;
+   font-size: 0.9em;
+}
+
+div.app_status_side ul {
+   margin: 0px;
+   padding: 3px 10px;
+}
+
+div.app_status_side ul li {
+  font-size: 0.8em; 
+}
+
+
+
+div.osm_object ul {
+   margin: 0px;
+   padding: 3px 10px;
+}
+
+div.osm_object ul li {
+  font-size: 0.8em; 
+}
+
+div.osm_object_map {
+   width: 190px; 
+   height: 190px;
+}
+
+#change_project {
+   margin: 10px 0px 20px 0px;
+}
+
+#change_project select {
+   margin-left: 10px;
+   font-size: 0.7em;
+}
+
+
+
+
+
+/* header, footer, content overwrites default styles */
+#wrap {
+   background: none repeat scroll 0 0 white;
+   border-left: 1px solid #999999;
+   border-right: 1px solid #999999;
+   margin: 0 auto;
+   width: 860px;
+}
+
+#content {
+   clear: both;
+   margin: 0px 40px 0px 40px;
+   padding: 0px;
+   border: 1px none green;
+}
+
+
+/* header */
+#header {
+  /* background-image: url('/assets/layout/red-header.png'); */
+  background-repeat: repeat-x;
+  padding: 0px 40px;
+  height: 75px; 
+}
+
+#header div.nav {
+   float: right;
+   text-align: right;
+}
+
+#header div.nav ul {
+   margin-top: 20px;
+   list-style-type: none;
+}
+
+#header div.nav ul li {
+   display:inline;
+   padding-left: 12px;
+}
+
+#header div.nav ul li a {
+   text-decoration: none;
+   color: #fff;
+}
+
+#header div.nav ul li a:hover {
+   text-decoration: underline;
+}
+
+#header div.nav ul li img {
+   width: 40px;
+   height: 40px;
+}
+
+#header div.logo {
+   width: 400px;
+   float: left;
+   padding: 10px 0px 40px 0px;
+}
+
+#header div.logo img.logo {
+   float: left;
+   vertical-align: middle;   
+   margin: 1px;
+   margin-right: 20px;
+}
+
+#header div.logo h1 {
+   margin: 0px;
+   font-family: serif;
+   font-weight: normal; 
+   text-shadow: #000 1px 1px 1px; font-size: 28px; color: #fff;
+}
+
+
+/* footer */
+#footer {
+   clear: both;
+   margin-top: 40px;
+   padding: 40px 20px 20px 80px;
+   background-image: url('/assets/layout/footer.png');
+   background-repeat: repeat-x;
+}
+
+#footer p {
+   color: #aaa;
+   font-size: .7em;
+   font-style: italic;
+}
+
+
+/* */
+input[type=submit], input[type=button] {
+   padding: 5px 12px;
+   color: #950B04;
+   font-weight: bold;
+}
+
+input[type=text], input[type=password] {
+   width: 220px;
+   padding: 1px;
+}
+
+option {
+   background-color: #fefefe;
+}
+
+/* error messages */
+#error_explanation {
+   width: 500px;
+   border: 1px solid #B3232C;
+   margin: 20px 0px;
+   background-color: #f0f0f0;
+}
+
+#error_explanation h2 {
+   margin: 0px;
+   padding: 5px 10px;
+   font-size: 0.9em;
+   font-weight: normal;
+   color: #B3232C;
+}
+
+#error_explanation ul li, #error_explanation p {
+   font-size: .8em;
+   padding: 2px 10px;
+}
+
+#error_explanation ul li {
+   margin-left: 20px;
+   list-style: square;
+}
+
+div.flash {
+   padding: 2px 10px;
+}
+
+div.success {
+   border: 2px solid #B9FFA2;
+   background-color: #B9FFA2;
+}
+
+div.error {
+   border: 2px solid #e4c7dd;
+   background-color: #e4c7dd;
+}
+
+input.error { border: 1px solid red; }
+
+label.error {
+   color: red;   
+   padding-left: 0px;
+   margin-left: 0px;
+}
+
+
+

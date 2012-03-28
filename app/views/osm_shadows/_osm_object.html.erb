@@ -1,0 +1,134 @@
+<script type="text/javascript" src="<%= asset_path 'OpenLayers-2.11/OpenLayers.js' %>"></script>
+<script type="text/javascript" src="<%= asset_path 'OpenStreetMap/OpenStreetMap.js' %>"></script>
+<script type="text/javascript">
+var map;
+var proj4326;
+var projmerc;
+var browseBounds;
+var tileBounds;
+var browseDataLayer;
+$(document).ready(function() {
+    initmap();
+});
+
+function initmap() 
+{
+    proj4326 = new OpenLayers.Projection("EPSG:4326");
+    projmerc = new OpenLayers.Projection("EPSG:900913");
+
+    map = new OpenLayers.Map("osm_object_map", {
+      controls: [
+         new OpenLayers.Control.Navigation()
+      ],
+      units: "m",
+      maxResolution: 156543.0339,
+      numZoomLevels: 20,
+      displayProjection: proj4326
+   })//;
+
+   var mapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik", {
+      keyid: "mapnik",
+      displayOutsideMaxExtent: true,
+      wrapDateLine: true
+   });
+   map.addLayer(mapnik);
+
+   // FIXME: do not add /full if object is a node
+   var url = "/osmapi/<%= @osm_shadow.osm_type %>/<%= @osm_shadow.osm_id %>/full";
+
+   var layer = new OpenLayers.Layer.GML("Object", url, {
+      format: OpenLayers.Format.OSM,
+      style: {
+          strokeColor: "red",
+          strokeWidth: 4,
+          strokeOpacity: 0.7,
+          fillOpacity: 0.2,
+          fillColor: "lightred",
+          pointRadius: 6
+      },
+      projection: proj4326
+   });
+
+   layer.events.register("loadend", layer, function() {
+      var extent;
+
+      if (this.features.length) {
+         extent = this.features[0].geometry.getBounds();
+         if (extent) {
+            this.map.zoomToExtent(extent.scale(2));
+         } else {
+            this.map.zoomToMaxExtent();
+         }
+      }
+   });
+
+   map.addLayer(layer);
+   layer.loadGML();
+}
+
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+
+   // change project
+   var cp = $("#change_project");
+   cp.hide();
+
+   $("#change_project_show").click(function(e) {
+      e.preventDefault();
+      cp.toggle();
+   });
+
+   var project;
+   var href;
+   cp.change(function() {
+      $("#change_project option:selected").each(function() {
+         project = $(this).val();
+      });
+      change_href = window.location.pathname + '?change_project=' + project;
+      window.location.href = change_href;   
+   }); 
+     
+   // expert view
+   var ex = $("#expert_view");
+   ex.hide();
+   $("#jq_expert_view").click(function(e) {
+      e.preventDefault();
+      ex.toggle();   
+   });
+
+
+});
+</script>
+<div class="osm_object">
+<h2>Project</h2>
+<ul>
+<li><%= @current_user.project.name %></li>
+
+<% if ((params['action'] == "show") or (params['action'] == "edit")) then %>
+   <li>Last modified: <%= @osm_shadow.created_at.strftime("%Y-%m-%d") %></li>
+   <li>By: <%= "#{@osm_shadow.changeset.user.firstname} #{@osm_shadow.changeset.user.lastname}" %></li>
+   <li>Version: <%= @osm_shadow.version %></li>
+<% end %>
+
+   <li><a href="#" id="change_project_show"><img src="<%= asset_path 'snow/edit.png' %>" width="20">Change project</a></li>
+</ul>
+
+<div id="change_project">
+<%= collection_select(:current_user, :project_id, Project.all, :id, :name, {}, {:class => 'change_project'}) %>
+</div>
+
+<h2>OSM Properties</h2>
+<ul>
+<li>OSM ID: <%= @osm_shadow.osm_id %></li>
+<li>OSM Type: <%= @osm_shadow.osm_type %></li>
+</ul>
+<div id="osm_object_map" class="osm_object_map"></div>
+
+<h2 style="margin-top: 20px;">Expert Functions</h2>
+<ul>
+   <li><a href="#" id="jq_expert_view">Expert view</a></li>
+</ul>
+</div>
+

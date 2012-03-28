@@ -1,0 +1,40 @@
+<h1>Edit User</h1>
+<%= render :partial => 'users_sidebar' %>
+
+<%= form_for(@user) do |f| %>
+<%= render 'shared/error_messages' %>
+<table>
+<tr>
+   <td><%= f.label :firstname %></td>
+   <td><%= f.text_field :firstname %></td>
+</tr>
+<tr>
+   <td><%= f.label :lastname %></td>
+   <td><%= f.text_field :lastname %></td>
+</tr>
+<tr>
+   <td><%= f.label :email %></td>
+   <td><%= f.text_field :email %></td>
+</tr>
+<tr>
+   <td><%= f.label :password %></td>
+   <td><%= f.text_field :password %></td>
+</tr>
+<tr>
+   <td><%= f.label :project %></td>
+   <td><%= collection_select(:user, :project_id, Project.all, :id, :name, {}, {:class => 'users_project'}) %></td>
+</tr>
+<tr>
+   <td><%= f.label :active %></td>
+   <td><%= f.select(:active, options_for_select([['Active', true], ['Inactive', false]], @user.active)) %></td>
+</tr>
+<tr>
+   <td><%= f.label :admin %></td>
+   <td><%= f.select(:admin, options_for_select([['Admin', true], ['No admin', false]], @user.admin)) %></td>
+</tr>
+<tr>
+   <td colspan="2"><%= f.submit "Save" %></td>
+</tr>
+</table>
+
+<% end %>

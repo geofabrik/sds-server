@@ -1,0 +1,2 @@
+module OsmShadowHelper
+end

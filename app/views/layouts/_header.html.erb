@@ -1,0 +1,25 @@
+<div id="header" style="background-image: url(<%= asset_path 'layout/red-header.png' %>);">
+   <div class="nav">
+      <ul>
+         <% if signed_in? %>
+         <li><%= link_to "Sign out", signout_path, :method => :delete %></li>
+         <li><%= link_to "Home", home_path %></li>
+         <li><%= link_to "Search", mapsearch_path %></li>
+
+         <% if current_user.admin? %>
+         <li><%= link_to "Users", users_path %></li>
+         <% end %>
+
+         <% else %>
+         <li><%= link_to "Sign in", signin_path %></li>
+         <% end %>
+
+         <li><%= link_to "HOT", "http://hot.openstreetmap.org/weblog/" %></li>
+      </ul>
+   </div>
+   <div class="logo">
+      <img src="<%= asset_path 'layout/logo.png' %>" class="logo">
+      <h1>HOT Data Store</h1>
+   </div>
+</div>
+

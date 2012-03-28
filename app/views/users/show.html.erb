@@ -1,0 +1,40 @@
+<h1>User Details</h1>
+<%= render :partial => "users_sidebar" %>
+
+<p>
+<a href="<%= edit_user_path(@user.id) %>" title="Edit User">
+<img src="<%= asset_path 'snow/edit2.png' %>" width="20">
+Edit User
+</a>
+</p>
+
+<table class="users">
+<tr>
+   <th>Firstname</th>
+   <td><%= @user.firstname %></td>
+</tr>
+<tr>
+   <th>Lastname</th>
+   <td><%= @user.lastname %></td>
+</tr>
+<tr>
+   <th>Email</th>
+   <td><%= @user.email %></td>
+</tr>
+<tr>
+   <th>Password</th>
+   <td><%= @user.password %></td>
+</tr>
+<tr>
+   <th>Default project</th>
+   <td><%= @user.project.name %></td>
+</tr>
+<tr>
+   <th>Active</th>
+   <td><%= @user.active %></td>
+</tr>
+<tr>
+   <th>Admin</th>
+   <td><%= @user.admin %></td>
+</tr>
+</table>

@@ -1,0 +1,172 @@
+<script type="text/javascript" src="<%= asset_path 'jquery-validation-1.9.0/jquery.validate.min.js' %>"></script>
+<script type="text/javascript" src="<%= asset_path 'jquery-datepicker/js/jquery-ui-1.8.16.custom.min.js' %>"></script>
+<link href="<%= asset_path 'jquery-datepicker/css/smoothness/jquery-ui-1.8.16.custom.css' %>" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+$(document).ready(function() {
+   $("#osm_shadows_form").validate();
+});
+</script>
+<style type="text/css">
+.ui-datepicker { width: 15em; }
+.ui-widget { font-size: 0.9em; }
+</style>
+<%
+   @unselected = 'unselected'
+
+   # this hash has the names, in English and Bahasa Indonesia, for 
+   # each of the special tags we are using.
+   @fields = [
+       { :tag => 'hot:bbb:name',
+         :type => 'text',
+         :en => "Name" },
+       { :tag => 'hot:bbb:mobile',
+         :type => 'text',
+         :en => "Mobile", :id => "Nomor Handphone" },
+       { :tag => 'hot:bbb:date',
+         :type => 'date',
+         :en => "Date", :id => "Tanggal" },
+       { :tag => 'hot:bbb:gender',
+         :type => 'select',
+         :options => [ @unselected, 'L', 'P' ],
+         :en => "Gender" },
+       { :tag => 'hot:bbb:status',
+         :type => 'text',
+         :en => "Status" },
+       { :tag => 'hot:bbb:street_address',
+         :type => 'text',
+         :en => "Address (Street)", :id => "Alamat (Jalan)" },
+       { :tag => 'hot:bbb:rt_jorong',
+         :type => 'text',
+         :en => "RT/JORONG" },
+       { :tag => 'hot:bbb:rw_korong',
+         :type => 'select',
+         :options => [ @unselected, 'option1', 'option2', 'option3' ],
+         :en => "RW/KORONG" },
+       { :tag => 'hot:bbb:kelurahan_nagari',
+         :type => 'select',
+         :options => [ @unselected, 'option1', 'option2', 'option3' ],
+         :en => "Kelurahan/Nagari" },
+       { :tag => 'hot:bbb:kode_pos',
+         :type => 'text',
+         :en => "Kode Pos" },
+       { :tag => 'hot:bbb:education',
+         :type => 'select',
+         :options => [ @unselected, 'SD', 'SMP', 'SMA', 'University' ],
+         :en => "Education", :id => "Pendidikan" },
+       { :tag => 'hot:bbb:occupation',
+         :type => 'text',
+         :en => "Occupation", :id => "Pekerjaan" },
+       { :tag => 'hot:bbb:literacy',
+         :type => 'select',
+         :options => [ @unselected, 'Ya', 'Tidak' ],
+         :en => "Literacy", :id => "Kemampuan Membaca" },
+       { :tag => 'hot:bbb:salary',
+         :type => 'text',
+         :en => "Salary per month", :id => "Pendapatan per bulan" },
+       { :tag => 'hot:bbb:social_group',
+         :type => 'select',
+         :options => [ @unselected, 'option1', 'option2', 'option3' ],
+         :en => "Social group", :id => "Kelompok Masyarakat" },
+       { :tag => 'hot:bbb:head_of_house',
+         :type => 'select',
+         :options => [ @unselected, 'Ya', 'Tidak' ],
+         :en => "Head of house", :id => "Kepala Rumah Tangga" },
+       { :tag => 'hot:bbb:people_in_house',
+         :type => 'text',
+         :en => "Number of people living in the house" },
+       { :tag => 'hot:bbb:heir',
+         :type => 'text',
+         :en => "Heir" },
+       { :tag => 'hot:bbb:alternative_name',
+         :type => 'text',
+         :en => "Alternative name" },
+       { :tag => 'hot:bbb:id_card_number',
+         :type => 'text',
+         :en => "ID card number" },
+       { :tag => 'hot:bbb:motivation',
+         :type => 'text',
+         :en => "Motivation for joining the program" },
+       { :tag => 'hot:bbb:url',
+         :type => 'url',
+         :en => "URL" },
+   ]
+%>
+
+<% if (params['action'] == "show") then %>
+   <table class="osm_shadow">
+   <% @fields.each do |field| %>
+   <tr>
+      <th>
+      <% if field.has_key?(:id) %>
+      <%= field[:id] %><br><span class="english">(<%= field[:en] %>)</span>
+      <% else %>
+      <%= field[:en] %>
+      <% end %>
+      </th>
+      <td>
+         <% if field[:type] == 'url' %>
+            <%= link_to @taghash[field[:tag]], @taghash[field[:tag]] %>
+         <% else %>
+            <%= @taghash[field[:tag]] %>
+         <% end %>
+      </td>
+   </tr>
+   <% end %>
+   </table>
+<% end %>
+
+<% if (params['action'] == "new") or (params['action'] == "edit") then %>
+<%= form_tag({:controller => "osm_shadows", :action => "create", :method => "post"}, :id => "osm_shadows_form") do %>
+<%= hidden_field_tag("osm_shadow[osm_id]", @osm_shadow.osm_id) %>
+<%= hidden_field_tag("osm_shadow[osm_type]", @osm_shadow.osm_type) %>
+<%= hidden_field_tag("unselected_value", @unselected) %>
+
+   <table class="osm_shadow">
+   <% @fields.each do |field| %>
+   <tr>
+      <th>
+      <% if field.has_key?(:id) %>
+      <%= field[:id] %><br><span class="english">(<%= field[:en] %>)</span>
+      <% else %>
+      <%= field[:en] %>
+      <% end %>
+      </th>
+      <td>
+      <% if field[:type] == 'text' %>
+         <input type="text" name="taghash[<%=field[:tag]%>]" value="<%= @taghash[field[:tag]] %>">
+      <% elsif field[:type] == 'date' %>
+         <input id="taghash_<%= field[:tag].tr(':', '_') %>" type="text" name="taghash[<%=field[:tag]%>]" value="<%= @taghash[field[:tag]] %>">
+         <script type="text/javascript">
+         $(function() { 
+            $("#taghash_<%= field[:tag].tr(':', '_') %>")
+               .datepicker({ dateFormat: 'yy-mm-dd' })
+               .css({'width' : '220px'}); 
+         }); 
+         </script>
+      <% elsif field[:type] == 'url' %>
+         <input type="text" class="url" name="taghash[<%=field[:tag]%>]" value="<%= @taghash[field[:tag]] %>">
+      <% elsif field[:type] == 'select' %>
+         <%= select_tag "taghash[#{field[:tag]}]", 
+           options_for_select((field[:options] + [@taghash[field[:tag]]]).uniq, @taghash[field[:tag]]) %>
+      <% end %>
+      </td>
+      <% @taghash.delete(field[:tag]) %>
+   </tr>
+   <% end %>
+   </table>
+
+   <div class="osm_shadow_submit">
+      <%= submit_tag("Save Tags") %>
+      <% if params[:action] == "edit" then %>
+         <a href="<%= show_shadow_path(@osm_shadow.osm_type, @osm_shadow.osm_id) %>">
+      <% else %>
+         <a href="<%= mapsearch_path %>">
+      <% end %>
+      <input type="button" value="Cancel"></a>
+   </div>
+
+   <% @taghash.each do |tkey, tvalue| %>
+      <%= hidden_field_tag("taghash[#{tkey}]", tvalue) %>
+   <% end %>
+<% end %>
+<% end %>

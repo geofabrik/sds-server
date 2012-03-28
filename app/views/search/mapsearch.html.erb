@@ -1,0 +1,231 @@
+<script type="text/javascript" src="<%= asset_path 'OpenLayers-2.11/OpenLayers.js' %>"></script>
+<script type="text/javascript" src="<%= asset_path 'OpenStreetMap/OpenStreetMap.js' %>"></script>
+<script type="text/javascript">
+var map;
+var proj4326;
+var projmerc;
+var browseBounds;
+var tileBounds;
+var browseDataLayer;
+$(document).ready(function() {
+   initmap();
+
+   $("#dataLoadButton").click(function(e) {
+      loadData();       
+      lockMap();
+   });
+});
+
+
+function lockMap() {
+   var lock = $("<div>")
+      .attr("id", "lock_div")
+      .css({
+         'position':       'absolute',
+         'z-index':        '2000000',
+         'top':            '0px',
+         'left':           '0px',
+         'border':         '5px solid white',
+         'background':     'white',
+         'width':          '100%',
+         'height':         '200%',
+         '-moz-opacity':   '0.70', 
+         'filter':         'alpha(opacity=70)', 
+         'opacity':        '0.70'
+      })
+      .appendTo($("body"));
+}
+
+function unlockMap() {
+   $("#lock_div").remove();   
+}
+
+function initmap() 
+{
+    proj4326 = new OpenLayers.Projection("EPSG:4326");
+    projmerc = new OpenLayers.Projection("EPSG:900913");
+
+    var lonlat = new OpenLayers.LonLat(<%= current_user.lon %>, <%= current_user.lat %>);
+    var zoom = <%= current_user.zoom %>;
+
+    map = new OpenLayers.Map("map", {
+      controls: [
+         new OpenLayers.Control.Navigation(),
+         new OpenLayers.Control.PanZoom()
+      ],
+      units: "m",
+      maxResolution: 156543.0339,
+      numZoomLevels: 19,
+      displayProjection: new OpenLayers.Projection("EPSG:4326"),
+      eventListeners: { "zoomend": zoomEnd }
+   })//;
+
+   var mapnik = new OpenLayers.Layer.OSM.Mapnik("mapnik", {
+      keyid: "mapnik",
+      displayOutsideMaxExtent: true,
+      wrapDateLine: true,
+   });
+   map.addLayer(mapnik);
+   lonlat.transform(proj4326, projmerc);
+   map.setCenter(lonlat, zoom);
+
+   map.dataLayer = new OpenLayers.Layer("Data", { "visibility": false,
+        displayInLayerSwitcher: false });
+   map.addLayer(map.dataLayer);
+
+}
+
+function zoomEnd()
+{
+    OpenLayers.Util.getElement("dataLoadButton").disabled = (map.getZoom()<16);
+}
+
+function loadData() 
+{
+    map.dataLayer.active = true;
+
+    var vectors = new OpenLayers.Layer.Vector();
+    var bounds = map.getExtent();
+    var projected = bounds.clone().transform(map.getProjectionObject(), proj4326);
+
+    if (!browseBounds || !browseBounds.containsBounds(projected)) 
+    {
+        var center = bounds.getCenterLonLat();
+        var tileWidth = bounds.getWidth() * 1.2;
+        var tileHeight = bounds.getHeight() * 1.2;
+        tileBounds = new OpenLayers.Bounds(center.lon - (tileWidth / 2),
+                center.lat - (tileHeight / 2),
+                center.lon + (tileWidth / 2),
+                center.lat + (tileHeight / 2));
+
+        browseBounds = tileBounds;
+        var projected = tileBounds.clone().transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326"));
+        var size = projected.getWidth() * projected.getHeight();
+
+        var formatOptions = {
+            checkTags: true,
+            interestingTagsExclude: ['source','source_ref','source:ref','history','attribution','created_by','tiger:county','tiger:tlid','tiger:upload_uuid']
+        };
+
+        var style = new OpenLayers.Style();
+
+        style.addRules([new OpenLayers.Rule({
+            symbolizer: {
+                Polygon: { fillColor: '#ff0000', strokeColor: '#ff0000' },
+                Line: { fillColor: '#ffff00', strokeColor: '#000000', strokeOpacity: '0.4' },
+                Point: { fillColor: '#00ff00', strokeColor: '#00ff00' }
+            }
+        })]);
+
+        if (browseDataLayer) browseDataLayer.destroyFeatures();
+
+        var url="/osmapi/map?bbox=" + projected.toBBOX();
+        browseDataLayer = new OpenLayers.Layer.GML("Data", url, {
+            format: OpenLayers.Format.OSM,
+            formatOptions: formatOptions,
+            requestSuccess: customDataLoader,
+            displayInLayerSwitcher: false,
+            styleMap: new OpenLayers.StyleMap({
+                'default': style,
+                'select': { strokeColor: '#0000ff', strokeWidth: 8 }
+                })
+            });
+        map.addLayer(browseDataLayer);
+
+        browseSelectControl = new OpenLayers.Control.SelectFeature(browseDataLayer, { onSelect: onFeatureSelect });
+        browseSelectControl.handlers.feature.stopDown = false;
+        browseSelectControl.handlers.feature.stopUp = false;
+        map.addControl(browseSelectControl);
+        browseSelectControl.activate();
+        browseActiveFeature = null;
+    }
+}
+
+function customDataLoader(request) 
+{
+    if (this.map.dataLayer.active) {
+        var doc = request.responseXML;
+
+        if (!doc || !doc.documentElement) {
+            doc = request.responseText;
+        }
+        else
+        {
+        }
+
+        var options = {};
+
+        OpenLayers.Util.extend(options, this.formatOptions);
+
+        if (this.map && !this.projection.equals(this.map.getProjectionObject())) {
+            options.externalProjection = this.projection;
+            options.internalProjection = this.map.getProjectionObject();
+        }    
+
+        var gml = this.format ? new this.format(options) : new OpenLayers.Format.GML(options);
+
+        browseFeatureList = gml.read(doc);
+
+        for (var i=0; i < browseFeatureList.length; i++)
+        {
+            if (browseFeatureList[i].attributes["building"])
+            {
+                browseDataLayer.addFeatures(browseFeatureList[i]);  
+            }
+        }
+
+        browseDataLayer.events.triggerEvent("loadend");
+        browseFeatureList = []; 
+
+    }
+    unlockMap();
+}
+
+function onFeatureSelect(feature) {
+    // Unselect previously selected feature
+    if (browseActiveFeature) {
+        browseActiveFeature.layer.drawFeature(
+                browseActiveFeature, 
+                browseActiveFeature.layer.styleMap.createSymbolizer(browseActiveFeature, "default")
+                );
+    }
+
+    // Redraw in selected style
+    feature.layer.drawFeature(
+      feature, feature.layer.styleMap.createSymbolizer(feature, "select")
+    );
+
+    var fstr;
+    fstr = featureType(feature) + " " + feature.osm_id;
+    for (var key in feature.attributes) {  
+      fstr = fstr + "\n" + key + "=" + feature.attributes[key];
+    }
+
+
+   center = map.getCenter();
+   center.transform(projmerc, proj4326);
+   zoom = map.getZoom();
+   params = 'zoom=' + zoom + '&lon=' + center.lon + '&lat=' + center.lat;
+
+    //alert("link that jumps to: " + fstr);
+    window.location.href = '<%= new_osm_shadow_path %>/' + featureType(feature) + '/' + feature.osm_id + '?' + params;
+
+
+    browseActiveFeature = feature; 
+} 
+
+function featureType(feature) {
+    if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+        return "node";
+    } else {
+        return "way";
+    }
+}
+// ]]>
+        </script>
+    
+<h1>Map Search</h1>
+<p>Zoom to an area of interest, then load buildings by clicking the button below the map.</p>
+
+<div id="map" style="width: 100%; height: 500px;"></div>
+<button id="dataLoadButton">Load OSM Geometries</button>

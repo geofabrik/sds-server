@@ -1,0 +1,47 @@
+<h1>Welcome to HOT Data Store</h1>
+
+<h2>Where can you go?</h2>
+
+<ul>
+<% if current_user.admin? %>
+<li>
+<%= link_to "User administration", users_path %>
+<br>Add a new user, look at the properties of an user or edit them.
+</li>
+
+<li>
+<%= link_to "Status page", status_path %>
+<br>Have a look at the application status page.
+</li>
+<% end %>
+
+<li>
+<%= link_to "Tag search", tagsearch_path %>
+<br>Search objects by tags.
+</li>
+
+<li>
+<%= link_to "Map search", mapsearch_path %>
+<br>Select an object by click on map.</li>
+</ul>
+
+
+<h2>Your personal data</h2>
+<table class="users">
+<tr>
+   <th>Name</th>
+   <td><%= "#{current_user.firstname} #{current_user.lastname}" %></td>
+</tr>
+<tr>
+   <th>Default project</th>
+   <td><%= current_user.project.name %></td>
+</tr>
+<% if current_user.admin? %>
+<tr>
+   <th>Admin rights</th>
+   <td><%= current_user.admin %></td>
+</tr>
+<% end %>
+</table>
+</ul>
+

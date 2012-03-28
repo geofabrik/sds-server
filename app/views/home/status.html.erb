@@ -1,0 +1,48 @@
+<h1>Application Status</h1>
+
+
+<div class="app_status_side">
+<h2>Database Statistics</h2>
+<ul>
+   <li>Number of objects: <%= @cnt_objects %></li>
+   <li>Number of tags: <%= @cnt_tags %></li>
+   <li>Number of users: <%= @cnt_users_active %></li>
+</ul>
+<h2>Application Admins</h2>
+<ul>
+   <% @users_admin.each do |u| %>
+   <li>
+   <%= "#{u.firstname}, #{u.lastname}"%>
+   </li>
+   <% end %>
+</ul>
+</div>
+
+
+<h2>Last Edits in Database</h2>
+<table class="app_status">
+<tr>
+<th>User</th>
+<th>Date</th>
+<th>OSM Objects<br>OSM ID - OSM Type</th>
+</tr>
+
+<% @last_edits.each do |c| %>
+<tr>
+<td><%= "#{c.user.firstname}, #{c.user.lastname}"%></td>
+<td><%= c.created_at.strftime("%Y-%m-%d") %></td>
+<td>
+<ul>
+   <% c.osm_shadows.each do |s| %>
+   <li>
+   <a href="<%= show_shadow_path(s.osm_type, s.osm_id) %>" title="View Object">
+   <%= "#{s.osm_type} - #{s.osm_id}" %>
+   </a>
+   </li>
+   <% end %>
+</ul>
+</td>
+</tr>
+<% end %>
+
+</table>

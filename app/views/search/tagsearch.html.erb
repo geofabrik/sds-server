@@ -1,0 +1,52 @@
+<script type="text/javascript">
+$(document).ready(function() {
+
+   var new_project;
+   $("#current_user_project_id").change(function() {
+      $("#current_user_project_id option:selected").each(function() {
+         new_project =$(this).val();  
+      });
+      $("#change_project").val(new_project); 
+      
+   });
+});
+</script>
+<h1>Search</h1>
+<p>Enter a string. You receive a list of objects, which contain this search string as key or value in any tag.</p>
+
+<h2>Your search values:</h2>
+<%= form_tag("/tagsearch", :method => "get") do %>
+<%= hidden_field_tag("change_project", current_user.project_id) %>
+<table class="osm_shadow">
+<tr>
+   <th>Select Project</th>
+   <td><%= collection_select(:current_user, :project_id, Project.all, :id, :name, {}, {:class => 'users_project'}) %></td>
+</tr>
+<tr>
+   <th>Enter Search String</th>
+   <td><input type="text" name="tagstring" value="<%= params[:tagstring] %>"></td>
+</tr>
+<tr>
+   <td colspan="2"><input type="submit" value="search"></td>
+</tr>
+</table>
+<% end %>
+
+<% if !params[:tagstring].blank? %>
+<h2>Search result</h2>
+
+<% if @result.length == 0 %>
+   <p>No Objects found.</p>
+<% else %>
+   <table class="osm_shadow">
+   <tr>
+   <th style="width: 20px;"></th>
+   <th style="width: 40px;">OSM ID</th>
+   <th style="width: 40px;">OSM Type</th>
+   <th></th>
+   </tr>
+   <%= render @current_user.project.partial %>
+   </table>
+<% end %>
+
+<% end %>

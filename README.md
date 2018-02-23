@@ -2,7 +2,7 @@
 
 This is a Ruby on Rails server application that serves as the
 counterpart for JOSM's "separate data store" plugin which lives
-at http://svn.openstreetmap.org/applications/editors/josm/sds/.
+at http://svn.openstreetmap.org/applications/editors/josm/plugins/sds/.
 
 It can store extra tags for OSM objects and deliver them to
 JOSM where they are processed like normal tags.

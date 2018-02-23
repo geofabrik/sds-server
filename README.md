@@ -1,3 +1,7 @@
+# Unmaintained
+
+This software is not maintained any longer.
+
 # Description
 
 This is a Ruby on Rails server application that serves as the
